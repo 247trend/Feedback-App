@@ -1,11 +1,22 @@
-import { createContext, useState } from "react"
+import { createContext, useState, useEffect } from "react"
 import FeedbackData from "../data/FeedbackData"
 import { v4 as uuidv4 } from "uuid"
 
 const FeedbackContext = createContext()
 
 export const FeedbackProvider = ({ children }) => {
-  const [feedback, setFeedback] = useState(FeedbackData)
+  const [feedback, setFeedback] = useState([])
+
+  useEffect(()=>{
+    fetchFeedback()
+  },[])
+
+  const fetchFeedback = async () => {
+    const res = await fetch(`http://localhost:5000/feedback?_sort=id&_order=desc`)
+    const data = await res.json()
+
+    setFeedback(data);
+  }
 
   const [feedbackEdit, setFeedbackEdit] = useState({
     item: {},
